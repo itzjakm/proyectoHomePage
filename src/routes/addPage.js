@@ -1,9 +1,10 @@
+import { BACKEND_GITHUB } from '$lib/env';
 export async function post({ request }) {
 	const data = await request.json();
 	if (data.password != '613') return { status: 401, body: 'Wrong password' };
 	const { pageNum } = data;
 	const headers = {
-		authorization: `token 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`
+		authorization: `token ${BACKEND_GITHUB}`
 	};
 	const res = await fetch('https://api.github.com/gists/6d713dcec6ff42d8e0645a6fb3ce6a00');
 	const resData = await res.json();

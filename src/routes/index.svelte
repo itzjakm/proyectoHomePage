@@ -1,5 +1,6 @@
 <script>
 	import { each } from 'svelte/internal';
+	export let data;
 	let editText;
 	let hideEdit = true;
 	let showingEdit = false;
@@ -7,15 +8,10 @@
 	let allId = [];
 	let index = 0;
 	async function init() {
-		const res = await fetch('https://api.github.com/gists/6d713dcec6ff42d8e0645a6fb3ce6a00', {
-			headers: {
-				authorization: `token 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`
-			}
-		});
-		const data = await res.json();
+		if (!data.files) return;
 		const dataObj = Object.entries(data.files)
 			.map((arr) => ({ content: arr[1].content, num: +arr[0] }))
-			.sort((a, b) => a.num - b.num);
+			?.sort((a, b) => a.num - b.num);
 		all = dataObj.map(({ content }) => content);
 		allId = dataObj.map(({ num }) => num);
 	}
