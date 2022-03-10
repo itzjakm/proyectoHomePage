@@ -1,22 +1,38 @@
 <script>
 	import { each } from 'svelte/internal';
 	let editText;
-	let hideEdit = false;
+	let hideEdit = true;
 	let showingEdit = false;
 	let all = [];
 	let allId = [];
 	let index = 0;
-	(async function t() {
-		const res = await fetch('https://api.github.com/gists/6d713dcec6ff42d8e0645a6fb3ce6a00');
+	async function init() {
+		const res = await fetch('https://api.github.com/gists/6d713dcec6ff42d8e0645a6fb3ce6a00', {
+			headers: {
+				authorization: `token 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`
+			}
+		});
 		const data = await res.json();
 		const dataObj = Object.entries(data.files)
 			.map((arr) => ({ content: arr[1].content, num: +arr[0] }))
 			.sort((a, b) => a.num - b.num);
 		all = dataObj.map(({ content }) => content);
 		allId = dataObj.map(({ num }) => num);
-	})();
+	}
+	init();
 
-	function saveEdit() {}
+	async function saveEdit() {
+		const pageNum = prompt('Enter # of page');
+		const password = prompt('Enter password');
+		await fetch('/addPage', {
+			method: 'POST',
+			body: JSON.stringify({
+				content: editText,
+				pageNum,
+				password
+			})
+		});
+	}
 </script>
 
 <div class="all">
@@ -55,7 +71,25 @@
 		<div class="second-row">
 			<div>
 				{#each allId as id}
-					<p>{id}<button class="deleteButton">x</button></p>
+					<p>
+						{id}<button
+							data-id={id}
+							on:click={async (e) => {
+								if (e.target instanceof HTMLElement) {
+									const password = prompt('Enter password');
+									await fetch('/deletePage', {
+										method: 'PATCH',
+										body: JSON.stringify({
+											pageNum: e.target.dataset.id,
+											password
+										})
+									});
+									showingEdit = false;
+								}
+							}}
+							class="deleteButton">x</button
+						>
+					</p>
 				{/each}
 			</div>
 			<textarea bind:value={editText} class="textarea" />

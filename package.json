@@ -17,8 +17,5 @@
     "prettier-plugin-svelte": "^2.5.0",
     "svelte": "^3.44.0"
   },
-  "type": "module",
-  "dependencies": {
-    "github-api": "^3.4.0"
-  }
+  "type": "module"
 }
