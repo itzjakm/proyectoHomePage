@@ -1,4 +1,5 @@
 import { BACKEND_GITHUB } from '$lib/env';
+
 export async function post({ request }) {
 	const data = await request.json();
 	if (data.password != '613') return { status: 401, body: 'Wrong password' };
